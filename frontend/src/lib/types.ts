@@ -91,6 +91,25 @@ export type OrchestratorResponse = {
   agents: string[];
 };
 
+// FHIR output types
+export type FhirMedicationInput = {
+  name: string;
+  dose?: string;
+  frequency?: string;
+  rxcui?: string;
+  sources: string[];
+  flag: "MATCH" | "MISSING" | "DOSE_MISMATCH";
+};
+
+export type FhirOutputResponse = {
+  status: string;
+  patient_id: string;
+  medication_count: number;
+  bundle_entry_count: number;
+  fhir_server: string;
+  bundle: Record<string, unknown>;
+};
+
 // FHIR server options
 export type FhirServer = {
   label: string;

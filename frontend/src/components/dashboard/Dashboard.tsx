@@ -15,6 +15,7 @@ import { MedicationList } from "./MedicationList";
 import { InteractionsPanel } from "./InteractionsPanel";
 import { PipelineVisualizer } from "./PipelineVisualizer";
 import { ReportPanel } from "./ReportPanel";
+import { FhirBundleButton } from "./FhirBundleButton";
 
 // Direct mode steps
 type DirectStep = "idle" | "fetching_meds" | "checking_interactions" | "done";
@@ -37,6 +38,8 @@ export function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<Step>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [currentPatientId, setCurrentPatientId] = useState("");
+  const [currentFhirUrl, setCurrentFhirUrl] = useState("");
 
   const handleModeChange = useCallback((newMode: PipelineMode) => {
     if (loading) return;
@@ -47,6 +50,8 @@ export function Dashboard() {
     setMedications([]);
     setInteractions([]);
     setReport("");
+    setCurrentPatientId("");
+    setCurrentFhirUrl("");
   }, [loading]);
 
   /** Full pipeline: calls Orchestrator which coordinates Source Collector + Interaction Checker */
@@ -55,6 +60,9 @@ export function Dashboard() {
       setLoading(true);
       setError(null);
       setReport("");
+      setMedications([]);
+      setCurrentPatientId(patientId);
+      setCurrentFhirUrl(fhirUrl);
 
       try {
         setStep("collecting");
@@ -91,6 +99,21 @@ export function Dashboard() {
 
         const data: OrchestratorResponse = await res.json();
         setReport(data.report || "No report content returned.");
+
+        // Fetch structured medication list for FHIR bundle generation
+        try {
+          const medsParams = new URLSearchParams({ patientId, status: "active" });
+          if (fhirUrl) medsParams.set("fhirUrl", fhirUrl);
+          const medsRes = await fetch(`/api/medications?${medsParams}`);
+          if (medsRes.ok) {
+            const medsData: MedicationsResponse = await medsRes.json();
+            setMedications(medsData.medications || []);
+          }
+        } catch {
+          // Non-critical: FHIR bundle button just won't appear
+          console.warn("Could not fetch medications for FHIR export");
+        }
+
         setStep("done");
       } catch (err) {
         const message =
@@ -111,6 +134,8 @@ export function Dashboard() {
       setError(null);
       setMedications([]);
       setInteractions([]);
+      setCurrentPatientId(patientId);
+      setCurrentFhirUrl(fhirUrl);
 
       try {
         // Step 1: Fetch medications
@@ -212,10 +237,19 @@ export function Dashboard() {
 
       {/* === FULL PIPELINE MODE === */}
       {hasPipelineResults && (
-        <ReportPanel
-          report={report}
-          loading={loading}
-        />
+        <>
+          <ReportPanel
+            report={report}
+            loading={loading}
+          />
+          {step === "done" && report && currentPatientId && medications.length > 0 && (
+            <FhirBundleButton
+              patientId={currentPatientId}
+              medications={medications}
+              fhirUrl={currentFhirUrl || undefined}
+            />
+          )}
+        </>
       )}
 
       {/* === QUICK SCAN MODE === */}
@@ -237,6 +271,13 @@ export function Dashboard() {
               loading={loading && step === "checking_interactions"}
             />
           </div>
+          {step === "done" && currentPatientId && medications.length > 0 && (
+            <FhirBundleButton
+              patientId={currentPatientId}
+              medications={medications}
+              fhirUrl={currentFhirUrl || undefined}
+            />
+          )}
         </>
       )}
 

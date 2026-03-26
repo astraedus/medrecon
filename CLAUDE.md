@@ -37,7 +37,7 @@ User/Frontend -> Orchestrator (port 8003)
 
 ## Project Structure
 
-- `mcp-server/` - TypeScript MCP server with 7 clinical tools
+- `mcp-server/` - TypeScript MCP server with 8 clinical tools
   - `tools/GetMedicationsTool.ts` - Queries FHIR for patient medications
   - `tools/CheckInteractionsTool.ts` - Drug interaction checking
   - `tools/LookupDrugInfoTool.ts` - Drug info lookup via RxNorm
@@ -151,7 +151,7 @@ Script: `scripts/generate-demo-patients.py` | Data: `scripts/demo-patients.json`
 - [x] Frontend deployed to Vercel, MCP server redeploying to Cloud Run
 - [x] FHIR MedicationStatement output (generate_fhir_output tool - 8th tool)
 - [x] FHIR Provenance resources (paired with each MedicationStatement)
-- [ ] Frontend FHIR Bundle download button (IN PROGRESS)
+- [x] Frontend FHIR Bundle download button (generate + download in both modes)
 - [ ] Generate Synthea patients (200+) with automated pipeline
 - [ ] Prompt Opinion marketplace publishing (waiting for support reply)
 

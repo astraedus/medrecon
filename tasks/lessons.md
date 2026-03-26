@@ -52,6 +52,18 @@
 - Must manually create components.json with `"style": "new-york"` and Tailwind v3 paths
 - lucide-react does NOT export a `Github` icon -- use inline SVG for GitHub logo
 
+## Week 4
+
+### Prompt Opinion platform: API key middleware pattern (2026-03-26)
+- Prompt Opinion requires agents to declare `APIKeySecurityScheme` in their agent card AND enforce it via middleware
+- Key imports from `a2a.types`: `APIKeySecurityScheme`, `In`, `SecurityScheme` -- these were not in the original app_factory.py
+- `AgentCard` accepts `securitySchemes` (dict) and `security` (list of dicts) kwargs
+- Use `BaseHTTPMiddleware` from starlette -- `app.add_middleware(ApiKeyMiddleware)` adds it AFTER the app is created
+- Middleware must call `await request.body()` before calling `call_next()` to read the body; then set `request._body` to inject modified bytes downstream
+- The `/.well-known/agent-card.json` endpoint must always be public (skip auth check for it)
+- Load API keys from env var `MEDRECON_API_KEY`; support comma-separated for multiple valid keys
+- The `extract_fhir_from_payload` helper must check both `params.metadata` AND `params.message.metadata` (callers place it in either location)
+
 ## Week 3
 
 ### A2A response structure from google-adk to_a2a (2026-03-26)

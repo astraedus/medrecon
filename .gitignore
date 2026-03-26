@@ -30,3 +30,5 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+frontend/README.md
+frontend/src/app/fonts/

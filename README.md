@@ -21,7 +21,7 @@ graph TD
     ORCH[Orchestrator Agent<br/>Coordinates workflow via A2A] --> SC[Source Collector Agent<br/>Multi-source FHIR gathering]
     ORCH --> IC[Interaction Checker Agent<br/>Safety analysis]
 
-    SC -->|MCP tools/call| MCP[MedRecon MCP Server<br/>7 clinical tools]
+    SC -->|MCP tools/call| MCP[MedRecon MCP Server<br/>8 clinical tools]
     IC -->|MCP tools/call| MCP
 
     MCP --> FHIR1[Hospital EHR<br/>FHIR R4]
@@ -59,6 +59,7 @@ graph TD
 | `find_alternatives` | Finds therapeutic alternatives using ATC classification from RxNorm/RxClass |
 | `validate_dose` | Validates medication doses against curated safe dose ranges for 18 common drugs |
 | `reconcile_lists` | Reconciles medication lists from multiple sources, flags discrepancies and missing drugs |
+| `generate_fhir_output` | Generates FHIR R4 MedicationStatement + Provenance Bundle from reconciled medication data |
 
 ## Quick Start
 
@@ -131,6 +132,7 @@ All services deployed to GCP Cloud Run (us-central1):
 - **Frontend**: Next.js 14, Tailwind CSS, Vercel
 - **FHIR**: HAPI FHIR R4 (public test server)
 - **Drug Interactions**: Curated clinical database (48 interactions) + OpenFDA API
+- **FHIR Output**: MedicationStatement + Provenance resources (write-back capable)
 - **Drug Information**: RxNorm API (NLM) + RxClass ATC classification
 - **Deployment**: GCP Cloud Run (auto-scales to zero)
 - **Languages**: Python 3.12, TypeScript 5.8
@@ -139,7 +141,7 @@ All services deployed to GCP Cloud Run (us-central1):
 
 ```
 medrecon/
-  mcp-server/              # TypeScript MCP server (7 clinical tools)
+  mcp-server/              # TypeScript MCP server (8 clinical tools)
     tools/                 # MCP tool implementations
     index.ts               # Server entry point
   agent/                   # Python A2A agents

@@ -37,3 +37,48 @@
 - MedicationRequest resources work well, MedicationStatement may not exist for all patients
 - The public server can be slow (3-5s per request) -- acceptable for development
 - For demo, consider running Docker HAPI FHIR locally for speed and reliability
+
+### MCP StreamableHTTP with sessionIdGenerator: undefined (2026-03-26)
+- When the MCP server uses `StreamableHTTPServerTransport({ sessionIdGenerator: undefined })`, sessions are disabled
+- This means `tools/call` can be sent directly as a standalone POST without `initialize` first
+- Each POST creates a fresh McpServer instance with all tools registered
+- The response format is SSE: `event: message\ndata: {JSON-RPC response}\n`
+- Parse by finding lines starting with `data: ` and extracting JSON
+- Tool results are in `result.content[0].text` as a JSON string that needs a second parse
+
+### Frontend shadcn v2.4.0 with Tailwind v3 (2026-03-26)
+- Next.js 14 ships with Tailwind v3; shadcn latest (v4+) targets Tailwind v4 = BROKEN
+- Use `npx shadcn@2.4.0 add <component> --yes` for compatibility
+- Must manually create components.json with `"style": "new-york"` and Tailwind v3 paths
+- lucide-react does NOT export a `Github` icon -- use inline SVG for GitHub logo
+
+## Week 3
+
+### A2A response structure from google-adk to_a2a (2026-03-26)
+- ADK agents put their final response in `result.artifacts[0].parts[0].text`, NOT in `result.status.message`
+- The status message may be empty or just contain the task state
+- History array contains all messages (user + agent) but artifacts are the canonical output
+- When building A2A client tools, check artifacts first, then status message, then history
+- The response text is often wrapped in markdown code blocks (```json ... ```)
+
+### A2A message/send protocol (2026-03-26)
+- Method is `message/send` (not `task/send` or `tasks/send`)
+- The message needs `messageId`, `role: "user"`, and `parts` array with `{kind: "text", text: "..."}`
+- Response returns a Task object with `id`, `contextId`, `status`, `artifacts`, `history`
+- Task states: submitted, working, completed, failed, canceled
+- For sync calls, the response waits until the task is completed
+
+### gcloud builds submit for Cloud Run deployment (2026-03-26)
+- `gcloud run deploy --source` does NOT support custom Dockerfile names (no --dockerfile flag)
+- Workaround: swap the desired Dockerfile to `Dockerfile` before `gcloud builds submit`, then restore
+- Or use `gcloud builds submit --tag` which uses the default `Dockerfile` in the context directory
+- Cloud Run env vars set via `--set-env-vars` override anything in the container's environment
+- Never include .env files in Docker images -- use Cloud Run env vars instead
+
+### Multi-agent timeout considerations (2026-03-26)
+- Orchestrator -> Source Collector -> Interaction Checker pipeline takes 30-60s total
+- Source Collector: ~15-20s (3 FHIR queries + Gemini reasoning)
+- Interaction Checker: ~15-20s (4 MCP tool calls + Gemini reasoning)
+- Orchestrator: ~10s own reasoning + waiting for both sub-agents
+- Cloud Run default timeout is 300s -- set explicitly with --timeout flag
+- A2A client timeout should be at least 120s for individual agent calls

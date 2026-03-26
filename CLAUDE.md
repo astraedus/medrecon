@@ -1,22 +1,43 @@
 # MedRecon - Intelligent Medication Reconciliation
 
-## Architecture
+## Architecture (3-Agent A2A Network)
 
 ```
-User -> MedRecon Agent (Python/ADK/A2A, port 8001)
-             |
-             v
-        MedRecon MCP Server (TypeScript, port 5000)
-             |
-        +----+----+
-        |         |
-   FHIR Server   Drug APIs
-   (HAPI R4)     (OpenFDA, curated DB)
+User/Frontend -> Orchestrator (port 8003)
+                      |
+                      | A2A protocol
+                      v
+               Source Collector (port 8001)
+                      | calls MCP tools
+                      v
+               MedRecon MCP Server (port 5000)
+                      |
+               +------+------+
+               |      |      |
+          FHIR Server Drug APIs RxNorm
+          (HAPI R4)  (OpenFDA)  (NLM)
+
+               Orchestrator
+                      |
+                      | A2A protocol
+                      v
+               Interaction Checker (port 8002)
+                      | calls MCP tools
+                      v
+               MedRecon MCP Server (port 5000)
 ```
+
+### Agent Roles
+1. **Source Collector** (port 8001): Pulls medications from multiple FHIR endpoints, simulates hospital EHR / pharmacy / PCP data silos. Merges with source attribution.
+2. **Interaction Checker** (port 8002): Safety analysis -- drug interactions, allergy cross-ref, dose validation, therapeutic alternatives.
+3. **Orchestrator** (port 8003): Coordinates Source Collector + Interaction Checker via A2A protocol. Assembles final reconciliation report. Does NOT call MCP tools directly.
+
+### Fallback
+- `medrecon_agent/` (port 8001): Original single-agent mode. Still works independently.
 
 ## Project Structure
 
-- `mcp-server/` - TypeScript MCP server with clinical tools
+- `mcp-server/` - TypeScript MCP server with 7 clinical tools
   - `tools/GetMedicationsTool.ts` - Queries FHIR for patient medications
   - `tools/CheckInteractionsTool.ts` - Drug interaction checking
   - `tools/LookupDrugInfoTool.ts` - Drug info lookup via RxNorm
@@ -25,35 +46,55 @@ User -> MedRecon Agent (Python/ADK/A2A, port 8001)
   - `tools/ValidateDoseTool.ts` - Dose range validation (18 common drugs)
   - `tools/ReconcileListsTool.ts` - Medication list reconciliation (core tool)
   - `index.ts` - Express + MCP server entry point
-- `agent/` - Python A2A agent using Google ADK
-  - `medrecon_agent/agent.py` - Agent definition with Gemini 2.5 Flash
-  - `medrecon_agent/app.py` - A2A application entry point
-  - `shared/tools/mcp_tools.py` - MCP tool wrappers
+- `agent/` - Python A2A agents using Google ADK + Gemini 2.5 Flash
+  - `source_collector/` - Source Collector agent (port 8001)
+  - `interaction_checker/` - Interaction Checker agent (port 8002)
+  - `orchestrator/` - Orchestrator agent (port 8003)
+  - `medrecon_agent/` - Original single-agent (fallback, port 8001)
+  - `shared/tools/mcp_tools.py` - MCP tool wrappers (6 tools)
   - `shared/fhir_hook.py` - FHIR context extraction from A2A metadata
+  - `shared/app_factory.py` - A2A app builder using google-adk to_a2a
 - `scripts/` - Test and utility scripts
 
 ## Running Locally
 
 ```bash
-# Terminal 1: MCP Server
-cd mcp-server && npm install && npm start
+# Start all 4 services at once:
+./scripts/start-all.sh
 
-# Terminal 2: Agent
-cd agent && python3 -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
-# Set GOOGLE_API_KEY in .env
-uvicorn medrecon_agent.app:a2a_app --host 0.0.0.0 --port 8001
+# Or manually:
+cd mcp-server && node dist/index.js                                          # port 5000
+cd agent && source venv/bin/activate
+uvicorn source_collector.app:a2a_app --host 0.0.0.0 --port 8001
+uvicorn interaction_checker.app:a2a_app --host 0.0.0.0 --port 8002
+uvicorn orchestrator.app:a2a_app --host 0.0.0.0 --port 8003
 
-# Test end-to-end
-cd agent && source venv/bin/activate && python3 ../scripts/test-agent.py
+# Test full pipeline:
+python3 scripts/test-orchestrator.py
+
+# Stop all:
+./scripts/start-all.sh stop
 ```
 
 ## Key Dependencies
 
 - MCP Server: @modelcontextprotocol/sdk, express, axios, zod
-- Agent: google-adk, a2a-sdk, httpx, google-genai (Gemini)
+- Agents: google-adk, a2a-sdk, httpx, python-dotenv, uvicorn
+- LLM: Gemini 2.5 Flash (GOOGLE_API_KEY)
 - FHIR: HAPI FHIR public server (hapi.fhir.org/baseR4)
 - Drug interactions: Curated clinical DB + OpenFDA API
+
+## Environment Variables
+
+```
+GOOGLE_API_KEY=...              # Gemini API key
+FHIR_SERVER_URL=https://hapi.fhir.org/baseR4
+MCP_SERVER_URL=http://localhost:5000/mcp  # or Cloud Run URL
+SOURCE_COLLECTOR_URL=http://localhost:8001
+INTERACTION_CHECKER_URL=http://localhost:8002
+ORCHESTRATOR_URL=http://localhost:8003
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+```
 
 ## Test Patient
 
@@ -63,18 +104,29 @@ including a SEVERE interaction (metoprolol + verapamil).
 ## Cloud Run Deployment
 
 - MCP Server: https://medrecon-mcp-93135657352.us-central1.run.app
-- Agent: https://medrecon-agent-93135657352.us-central1.run.app
+- Agent (single): https://medrecon-agent-93135657352.us-central1.run.app
+- Source Collector: https://medrecon-source-collector-93135657352.us-central1.run.app
+- Interaction Checker: https://medrecon-interaction-checker-93135657352.us-central1.run.app
+- Orchestrator: https://medrecon-orchestrator-93135657352.us-central1.run.app
 - GCP Project: gen-lang-client-0492726898 (us-central1)
 
-## Week 1 Status
+## Build Progress
 
-- [x] MCP server with 7 clinical tools (get_medications, check_interactions, lookup_drug_info, check_allergies, find_alternatives, validate_dose, reconcile_lists)
-- [x] Agent with Gemini 2.5 Flash, calls MCP tools
+### Week 1 (Complete)
+- [x] MCP server with 7 clinical tools
+- [x] Single agent with Gemini 2.5 Flash
 - [x] End-to-end working: agent pulls meds from live FHIR, checks interactions
-- [x] Deployed to GCP Cloud Run (MCP server + agent)
-- [ ] HAPI FHIR Docker (using public server for now)
-- [ ] Synthea patient data loading
-- [ ] Deploy to Prompt Opinion platform
+- [x] Deployed to GCP Cloud Run (MCP server + single agent)
+
+### Week 3 (Complete)
+- [x] Split into 3-agent A2A network (Source Collector, Interaction Checker, Orchestrator)
+- [x] Orchestrator calls other agents via A2A protocol (JSON-RPC message/send)
+- [x] Source Collector queries FHIR 3x to simulate multi-source data
+- [x] Interaction Checker runs all safety tools (interactions, allergies, doses, alternatives)
+- [x] Full pipeline tested locally: Orchestrator -> Source Collector -> Interaction Checker -> Report
+- [x] MCP tool wrappers expanded to 6 tools (added check_allergies, validate_dose, find_alternatives, lookup_drug_info)
+- [x] Deploy 3 agents to Cloud Run (all live and tested)
+- [ ] Update frontend to call Orchestrator
 
 ## Hackathon
 

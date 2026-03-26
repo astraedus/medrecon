@@ -83,7 +83,9 @@ function InteractionCard({ interaction }: { interaction: DrugInteraction }) {
             </span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            {interaction.description}
+            {interaction.description.length > 200
+              ? `${interaction.description.slice(0, 200)}...`
+              : interaction.description}
           </p>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-[10px] text-muted-foreground/70">

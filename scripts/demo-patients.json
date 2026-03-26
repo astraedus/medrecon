@@ -1,0 +1,61 @@
+{
+  "fhir_server": "https://hapi.fhir.org/baseR4",
+  "generated_at": "2026-03-26",
+  "patients": [
+    {
+      "name": "Margaret Ann Chen",
+      "patient_id": "131494564",
+      "medications": 11,
+      "allergies": 2,
+      "conditions": 5,
+      "key_interactions": [
+        "SEVERE: Metoprolol + Verapamil (bradycardia/heart block)",
+        "SEVERE: Warfarin + Amiodarone (increased bleeding risk)"
+      ]
+    },
+    {
+      "name": "Robert James Williams",
+      "patient_id": "131494583",
+      "medications": 11,
+      "allergies": 1,
+      "conditions": 5,
+      "key_interactions": [
+        "SEVERE: Methotrexate + NSAID (renal/bone marrow toxicity)"
+      ]
+    },
+    {
+      "name": "Dorothy Mae Johnson",
+      "patient_id": "131494601",
+      "medications": 12,
+      "allergies": 2,
+      "conditions": 7,
+      "key_interactions": [
+        "SEVERE: Simvastatin + Clarithromycin (rhabdomyolysis)",
+        "SEVERE: Sertraline + Tramadol (serotonin syndrome)"
+      ]
+    },
+    {
+      "name": "James Michael Rivera",
+      "patient_id": "131494623",
+      "medications": 11,
+      "allergies": 1,
+      "conditions": 5,
+      "key_interactions": [
+        "SEVERE: Lithium + NSAID (lithium toxicity)",
+        "MODERATE: Lithium + ACE inhibitor (lithium level increase)"
+      ]
+    },
+    {
+      "name": "Sarah Elizabeth Patel",
+      "patient_id": "131494641",
+      "medications": 13,
+      "allergies": 3,
+      "conditions": 7,
+      "key_interactions": [
+        "SEVERE: Warfarin + Fluconazole (massive INR elevation)",
+        "SEVERE: Levodopa + Metoclopramide (dopamine antagonism)",
+        "MODERATE: Warfarin + Aspirin (additive bleeding risk)"
+      ]
+    }
+  ]
+}

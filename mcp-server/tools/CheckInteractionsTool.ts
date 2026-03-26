@@ -222,6 +222,72 @@ const KNOWN_INTERACTIONS: {
     description:
       "NSAIDs reduce renal clearance of methotrexate, potentially causing fatal methotrexate toxicity with bone marrow suppression and renal failure.",
   },
+  {
+    drugs: ["methotrexate", "naproxen"],
+    severity: "SEVERE",
+    description:
+      "Naproxen reduces renal clearance of methotrexate, potentially causing fatal toxicity with bone marrow suppression and renal failure. All NSAIDs carry this risk.",
+  },
+  {
+    drugs: ["simvastatin", "clarithromycin"],
+    severity: "SEVERE",
+    description:
+      "Clarithromycin is a strong CYP3A4 inhibitor that dramatically increases simvastatin levels. Risk of rhabdomyolysis (muscle breakdown), acute kidney injury. Contraindicated combination.",
+  },
+  {
+    drugs: ["lithium", "lisinopril"],
+    severity: "MODERATE",
+    description:
+      "ACE inhibitors reduce renal lithium clearance, potentially increasing lithium levels by 25-35%. Monitor lithium levels closely and adjust dose if needed.",
+  },
+  {
+    drugs: ["lithium", "naproxen"],
+    severity: "SEVERE",
+    description:
+      "NSAIDs reduce renal clearance of lithium, potentially causing lithium toxicity. Naproxen can increase lithium levels by 15-30%.",
+  },
+  {
+    drugs: ["carbidopa", "metoclopramide"],
+    severity: "SEVERE",
+    description:
+      "Metoclopramide is a dopamine antagonist that directly opposes the therapeutic effect of levodopa/carbidopa. Can worsen Parkinson's symptoms and cause extrapyramidal effects.",
+  },
+  {
+    drugs: ["levodopa", "metoclopramide"],
+    severity: "SEVERE",
+    description:
+      "Metoclopramide blocks dopamine receptors, directly antagonizing levodopa's mechanism of action. Contraindicated in Parkinson's disease.",
+  },
+  {
+    drugs: ["prednisone", "naproxen"],
+    severity: "MODERATE",
+    description:
+      "Concurrent corticosteroid and NSAID use significantly increases risk of GI bleeding and peptic ulceration. Add GI protection if combination is necessary.",
+  },
+  {
+    drugs: ["prednisone", "ibuprofen"],
+    severity: "MODERATE",
+    description:
+      "Combined corticosteroid and NSAID therapy increases risk of GI bleeding. Consider adding a proton pump inhibitor for GI protection.",
+  },
+  {
+    drugs: ["valproic acid", "lamotrigine"],
+    severity: "MODERATE",
+    description:
+      "Valproic acid inhibits lamotrigine glucuronidation, doubling lamotrigine levels. Lamotrigine dose must be reduced by 50% when adding valproic acid. Risk of Stevens-Johnson syndrome with elevated levels.",
+  },
+  {
+    drugs: ["warfarin", "clopidogrel"],
+    severity: "SEVERE",
+    description:
+      "Triple antithrombotic therapy (warfarin + clopidogrel + aspirin) dramatically increases major bleeding risk. Reassess need for all three agents.",
+  },
+  {
+    drugs: ["sertraline", "trazodone"],
+    severity: "MODERATE",
+    description:
+      "Both drugs have serotonergic activity. Combined use may increase risk of serotonin syndrome. Monitor for agitation, confusion, tachycardia.",
+  },
 ];
 
 /**

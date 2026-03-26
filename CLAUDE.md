@@ -96,10 +96,23 @@ ORCHESTRATOR_URL=http://localhost:8003
 GOOGLE_GENAI_USE_VERTEXAI=FALSE
 ```
 
-## Test Patient
+## Test Patients
 
+### Original Test Patient
 Patient ID `131283452` on HAPI FHIR public server has 11 active medications
 including a SEVERE interaction (metoprolol + verapamil).
+
+### Demo Patients (generated 2026-03-26)
+| ID | Name | Meds | Key Interactions |
+|----|------|------|-----------------|
+| `131494564` | Margaret Ann Chen | 11 | SEVERE: Metoprolol+Verapamil, Warfarin+Amiodarone |
+| `131494583` | Robert James Williams | 11 | SEVERE: Methotrexate+NSAID |
+| `131494601` | Dorothy Mae Johnson | 12 | SEVERE: Simvastatin+Clarithromycin, Sertraline+Tramadol |
+| `131494623` | James Michael Rivera | 11 | SEVERE: Lithium+NSAID |
+| `131494641` | Sarah Elizabeth Patel | 13 | SEVERE: Warfarin+Fluconazole, Levodopa+Metoclopramide |
+
+All have allergies, conditions, and full FHIR MedicationRequest resources with RxNorm codes.
+Script: `scripts/generate-demo-patients.py` | Data: `scripts/demo-patients.json`
 
 ## Cloud Run Deployment
 
@@ -126,7 +139,18 @@ including a SEVERE interaction (metoprolol + verapamil).
 - [x] Full pipeline tested locally: Orchestrator -> Source Collector -> Interaction Checker -> Report
 - [x] MCP tool wrappers expanded to 6 tools (added check_allergies, validate_dose, find_alternatives, lookup_drug_info)
 - [x] Deploy 3 agents to Cloud Run (all live and tested)
-- [ ] Update frontend to call Orchestrator
+- [x] Update frontend to call Orchestrator
+
+### Week 4 (In Progress)
+- [x] Frontend wired to Orchestrator — dual-mode UI (Full Pipeline default + Quick Scan)
+- [x] PipelineVisualizer shows 3-agent steps (Source Collector → Interaction Checker → Report)
+- [x] ReportPanel renders Orchestrator markdown reports with severity highlighting
+- [x] Demo patient presets (5 patients with complex polypharmacy, loaded into HAPI FHIR)
+- [x] 12 new drug interactions added to curated database (simvastatin+clarithromycin, lithium+lisinopril, etc.)
+- [x] Frontend deployed to Vercel, MCP server redeploying to Cloud Run
+- [ ] Generate Synthea patients (200+) with automated pipeline
+- [ ] FHIR MedicationStatement output (reconciled list as FHIR resource)
+- [ ] FHIR Provenance resources (source tracking)
 
 ## Hackathon
 

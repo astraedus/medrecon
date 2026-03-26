@@ -29,6 +29,31 @@ def _coerce_fhir_data(value):
     return None
 
 
+def extract_fhir_from_payload(payload: dict):
+    """
+    Extract FHIR context from a raw JSON-RPC payload dict.
+
+    Checks params.metadata first, then params.message.metadata as a fallback.
+    Returns (key, fhir_data_dict) or (None, None).
+
+    Used by ApiKeyMiddleware to bridge FHIR metadata so the ADK callback can
+    find it regardless of where the caller placed it.
+    """
+    if not isinstance(payload, dict):
+        return None, None
+    params = payload.get("params")
+    if not isinstance(params, dict):
+        return None, None
+
+    for metadata in (params.get("metadata"), (params.get("message") or {}).get("metadata")):
+        if isinstance(metadata, dict):
+            for key, value in metadata.items():
+                if FHIR_CONTEXT_KEY in str(key):
+                    return key, _coerce_fhir_data(value)
+
+    return None, None
+
+
 def _serialize(value):
     """Return a JSON-serialisable representation."""
     if value is None:

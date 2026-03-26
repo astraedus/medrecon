@@ -19,6 +19,11 @@ logger = logging.getLogger(__name__)
 A2A_TIMEOUT = 120  # seconds -- agents need time to reason + call MCP tools
 
 
+def _get_api_key() -> str:
+    """Get the API key for authenticating with sub-agents."""
+    return os.getenv("MEDRECON_API_KEY", "medrecon-dev-key-2026")
+
+
 def _get_source_collector_url() -> str:
     """Get the Source Collector agent URL."""
     return os.getenv("SOURCE_COLLECTOR_URL", "http://localhost:8001")
@@ -61,6 +66,7 @@ def _send_a2a_message(agent_url: str, message_text: str) -> dict:
             headers={
                 "Content-Type": "application/json",
                 "Accept": "application/json",
+                "X-API-Key": _get_api_key(),
             },
             timeout=A2A_TIMEOUT,
         )

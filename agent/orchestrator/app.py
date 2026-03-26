@@ -37,6 +37,7 @@ a2a_app = create_a2a_app(
     ),
     port=8003,
     fhir_extension_uri=f"{os.getenv('PO_PLATFORM_BASE_URL', 'http://localhost:5139')}/schemas/a2a/v1/fhir-context",
+    require_api_key=True,
     skills=[
         AgentSkill(
             id="medication-reconciliation",

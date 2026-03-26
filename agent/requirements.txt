@@ -1,0 +1,12 @@
+# Core ADK framework + A2A server
+google-adk>=1.25.0
+a2a-sdk[http-server]>=0.3.0
+
+# HTTP client used by MCP and FHIR tools
+httpx>=0.28.0
+
+# Environment variable loading
+python-dotenv>=1.0.0
+
+# ASGI server
+uvicorn>=0.41.0

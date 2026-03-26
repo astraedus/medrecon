@@ -1,0 +1,27 @@
+{
+  "name": "medrecon-mcp-server",
+  "version": "1.0.0",
+  "description": "MedRecon MCP Server - Clinical decision support tools for medication reconciliation",
+  "main": "index.ts",
+  "scripts": {
+    "start": "npx tsx index.ts",
+    "dev": "npx tsx watch index.ts",
+    "build": "npx tsc",
+    "test": "echo \"Tests not yet configured\" && exit 0"
+  },
+  "author": "Astraedus",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.1",
+    "axios": "^1.9.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "zod": "^3.24.0"
+  }
+}

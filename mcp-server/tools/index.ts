@@ -5,6 +5,7 @@ import { CheckAllergiesToolInstance } from "./CheckAllergiesTool.js";
 import { FindAlternativesToolInstance } from "./FindAlternativesTool.js";
 import { ValidateDoseToolInstance } from "./ValidateDoseTool.js";
 import { ReconcileListsToolInstance } from "./ReconcileListsTool.js";
+import { GenerateFhirOutputToolInstance } from "./GenerateFhirOutputTool.js";
 
 export {
   GetMedicationsToolInstance,
@@ -14,4 +15,5 @@ export {
   FindAlternativesToolInstance,
   ValidateDoseToolInstance,
   ReconcileListsToolInstance,
+  GenerateFhirOutputToolInstance,
 };

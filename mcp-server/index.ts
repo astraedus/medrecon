@@ -25,6 +25,7 @@ app.get("/health", async (_req, res) => {
       "find_alternatives",
       "validate_dose",
       "reconcile_lists",
+      "generate_fhir_output",
     ],
   });
 });

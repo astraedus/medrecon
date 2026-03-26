@@ -168,6 +168,60 @@ const KNOWN_INTERACTIONS: {
     description:
       "Amlodipine may increase atorvastatin exposure via CYP3A4 inhibition. Atorvastatin dose should not exceed 80mg daily.",
   },
+  {
+    drugs: ["digoxin", "verapamil"],
+    severity: "SEVERE",
+    description:
+      "Verapamil increases digoxin levels by 50-75% and both drugs slow AV conduction. Combined use can cause severe bradycardia, heart block, and digoxin toxicity.",
+  },
+  {
+    drugs: ["fluoxetine", "monoamine oxidase inhibitor"],
+    severity: "SEVERE",
+    description:
+      "Contraindicated. Combined SSRI + MAOI can cause fatal serotonin syndrome. At least 5 weeks washout required after stopping fluoxetine before starting an MAOI.",
+  },
+  {
+    drugs: ["sertraline", "monoamine oxidase inhibitor"],
+    severity: "SEVERE",
+    description:
+      "Contraindicated. SSRI + MAOI combination can cause fatal serotonin syndrome. At least 2 weeks washout required.",
+  },
+  {
+    drugs: ["morphine", "benzodiazepine"],
+    severity: "SEVERE",
+    description:
+      "FDA black box warning. Concurrent opioid and benzodiazepine use increases risk of respiratory depression, sedation, coma, and death.",
+  },
+  {
+    drugs: ["morphine", "diazepam"],
+    severity: "SEVERE",
+    description:
+      "FDA black box warning. Concurrent opioid and benzodiazepine use increases risk of respiratory depression, sedation, coma, and death.",
+  },
+  {
+    drugs: ["morphine", "lorazepam"],
+    severity: "SEVERE",
+    description:
+      "FDA black box warning. Concurrent opioid and benzodiazepine use increases risk of respiratory depression, sedation, coma, and death.",
+  },
+  {
+    drugs: ["fentanyl", "benzodiazepine"],
+    severity: "SEVERE",
+    description:
+      "FDA black box warning. Concurrent opioid and benzodiazepine use increases risk of respiratory depression, sedation, coma, and death.",
+  },
+  {
+    drugs: ["ceftriaxone", "calcium"],
+    severity: "SEVERE",
+    description:
+      "Ceftriaxone and calcium-containing IV solutions can form insoluble precipitates. Contraindicated in neonates. In adults, do not administer simultaneously through the same IV line.",
+  },
+  {
+    drugs: ["methotrexate", "nsaid"],
+    severity: "SEVERE",
+    description:
+      "NSAIDs reduce renal clearance of methotrexate, potentially causing fatal methotrexate toxicity with bone marrow suppression and renal failure.",
+  },
 ];
 
 /**

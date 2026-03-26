@@ -12,22 +12,31 @@ MedRecon pulls medication lists from FHIR health records, checks for drug-drug i
 
 ## Architecture
 
+```mermaid
+graph TD
+    PO[Prompt Opinion Platform] --> ORCH[MedRecon Orchestrator<br/>A2A Agent]
+
+    ORCH --> SC[Source Collector Agent<br/>Multi-FHIR Gathering]
+    ORCH --> IC[Interaction Checker Agent<br/>Safety Analysis]
+
+    SC --> MCP[MedRecon MCP Server<br/>TypeScript + MCP SDK]
+    IC --> MCP
+
+    MCP --> FHIR1[Hospital EHR<br/>FHIR R4]
+    MCP --> FHIR2[Pharmacy System<br/>FHIR R4]
+    MCP --> FHIR3[Primary Care<br/>FHIR R4]
+    MCP --> FDA[OpenFDA<br/>Drug Labels]
+    MCP --> RX[RxNorm<br/>Drug Normalization]
+
+    ORCH --> REPORT[Reconciled Medication List<br/>+ Safety Alerts]
+
+    style ORCH fill:#f59e0b,color:#000
+    style MCP fill:#3b82f6,color:#fff
+    style REPORT fill:#22c55e,color:#000
 ```
-                     Prompt Opinion Platform
-                            |
-                            v
-                    MedRecon Agent (A2A)
-                    Python / Google ADK
-                    Gemini 2.5 Flash
-                            |
-                            v
-                    MedRecon MCP Server
-                    TypeScript / MCP SDK
-                     /              \
-                    v                v
-             FHIR R4 Server    Drug Interaction APIs
-             (HAPI FHIR)       (Curated DB + OpenFDA)
-```
+
+**Current (Week 1):** Single agent + MCP server with 2 tools, querying live FHIR data.
+**Target (Week 3+):** Full 3-agent A2A network with multi-source reconciliation.
 
 ### MCP Server Tools
 

@@ -362,3 +362,50 @@ def lookup_drug_info(
     logger.info("lookup_drug_info drug=%s", drug_name)
 
     return _call_mcp_tool("lookup_drug_info", {"drug_name": drug_name})
+
+
+def generate_fhir_output(
+    patient_id: str,
+    medications: str,
+    fhir_url: str = "",
+    tool_context: ToolContext = None,
+) -> dict:
+    """
+    Generates FHIR R4 MedicationStatement resources from reconciled medication data.
+
+    Converts a list of reconciled medications into a proper FHIR R4 Bundle containing
+    paired MedicationStatement and Provenance resources. The output can be posted
+    directly to a FHIR server to persist the reconciliation results.
+
+    Args:
+        patient_id: The FHIR Patient resource ID. Required.
+        medications: JSON string of reconciled medications array. Each item should have:
+                     name (string), dose (string), frequency (string), rxcui (string),
+                     sources (string array), flag ("MATCH"|"MISSING"|"DOSE_MISMATCH").
+        fhir_url: The base FHIR server URL for resource references. Optional.
+
+    Returns:
+        A FHIR R4 Bundle (type: collection) containing MedicationStatement and
+        Provenance resources for each reconciled medication.
+    """
+    resolved_patient_id = patient_id
+    resolved_fhir_url = fhir_url
+
+    if tool_context:
+        if not resolved_patient_id:
+            resolved_patient_id = _get_patient_id(tool_context)
+        if not resolved_fhir_url:
+            resolved_fhir_url = _get_fhir_url(tool_context)
+
+    if not resolved_patient_id:
+        return {"status": "error", "error_message": "No patient_id provided."}
+    if not medications or not medications.strip():
+        return {"status": "error", "error_message": "No medications provided."}
+
+    logger.info("generate_fhir_output patient_id=%s", resolved_patient_id)
+
+    arguments = {"patient_id": resolved_patient_id, "medications": medications}
+    if resolved_fhir_url:
+        arguments["fhir_url"] = resolved_fhir_url
+
+    return _call_mcp_tool("generate_fhir_output", arguments)

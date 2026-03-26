@@ -1,6 +1,6 @@
 # MedRecon - Intelligent Medication Reconciliation
 
-## Architecture (3-Agent A2A Network)
+## Architecture (3-Agent A2A Network + 8 MCP Tools)
 
 ```
 User/Frontend -> Orchestrator (port 8003)
@@ -45,6 +45,7 @@ User/Frontend -> Orchestrator (port 8003)
   - `tools/FindAlternativesTool.ts` - Therapeutic alternatives via RxClass ATC
   - `tools/ValidateDoseTool.ts` - Dose range validation (18 common drugs)
   - `tools/ReconcileListsTool.ts` - Medication list reconciliation (core tool)
+  - `tools/GenerateFhirOutputTool.ts` - FHIR R4 MedicationStatement + Provenance output
   - `index.ts` - Express + MCP server entry point
 - `agent/` - Python A2A agents using Google ADK + Gemini 2.5 Flash
   - `source_collector/` - Source Collector agent (port 8001)
@@ -148,9 +149,11 @@ Script: `scripts/generate-demo-patients.py` | Data: `scripts/demo-patients.json`
 - [x] Demo patient presets (5 patients with complex polypharmacy, loaded into HAPI FHIR)
 - [x] 12 new drug interactions added to curated database (simvastatin+clarithromycin, lithium+lisinopril, etc.)
 - [x] Frontend deployed to Vercel, MCP server redeploying to Cloud Run
+- [x] FHIR MedicationStatement output (generate_fhir_output tool - 8th tool)
+- [x] FHIR Provenance resources (paired with each MedicationStatement)
+- [ ] Frontend FHIR Bundle download button (IN PROGRESS)
 - [ ] Generate Synthea patients (200+) with automated pipeline
-- [ ] FHIR MedicationStatement output (reconciled list as FHIR resource)
-- [ ] FHIR Provenance resources (source tracking)
+- [ ] Prompt Opinion marketplace publishing (waiting for support reply)
 
 ## Hackathon
 

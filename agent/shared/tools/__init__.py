@@ -8,6 +8,7 @@ from .mcp_tools import (
     validate_dose,
     find_alternatives,
     lookup_drug_info,
+    generate_fhir_output,
 )
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "validate_dose",
     "find_alternatives",
     "lookup_drug_info",
+    "generate_fhir_output",
 ]

@@ -60,11 +60,18 @@ cd agent && source venv/bin/activate && python3 ../scripts/test-agent.py
 Patient ID `131283452` on HAPI FHIR public server has 11 active medications
 including a SEVERE interaction (metoprolol + verapamil).
 
+## Cloud Run Deployment
+
+- MCP Server: https://medrecon-mcp-93135657352.us-central1.run.app
+- Agent: https://medrecon-agent-93135657352.us-central1.run.app
+- GCP Project: gen-lang-client-0492726898 (us-central1)
+
 ## Week 1 Status
 
 - [x] MCP server with 7 clinical tools (get_medications, check_interactions, lookup_drug_info, check_allergies, find_alternatives, validate_dose, reconcile_lists)
 - [x] Agent with Gemini 2.5 Flash, calls MCP tools
 - [x] End-to-end working: agent pulls meds from live FHIR, checks interactions
+- [x] Deployed to GCP Cloud Run (MCP server + agent)
 - [ ] HAPI FHIR Docker (using public server for now)
 - [ ] Synthea patient data loading
 - [ ] Deploy to Prompt Opinion platform

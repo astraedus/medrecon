@@ -124,6 +124,36 @@ python3 scripts/test-mcp-tools.py
 - MODERATE: Apixaban + Aspirin (increased bleeding risk)
 - 20+ CHECK-level interactions from OpenFDA requiring clinical review
 
+## Cloud Run Deployment
+
+Both services are deployed to GCP Cloud Run:
+
+| Service | URL |
+|---------|-----|
+| MCP Server | https://medrecon-mcp-93135657352.us-central1.run.app |
+| Agent | https://medrecon-agent-93135657352.us-central1.run.app |
+
+**Health check:** `curl https://medrecon-mcp-93135657352.us-central1.run.app/health`
+
+**Agent card:** `curl https://medrecon-agent-93135657352.us-central1.run.app/.well-known/agent-card.json`
+
+### Deploy from source
+
+```bash
+# MCP Server
+cd mcp-server
+gcloud builds submit --tag gcr.io/gen-lang-client-0492726898/medrecon-mcp
+gcloud run deploy medrecon-mcp --image gcr.io/gen-lang-client-0492726898/medrecon-mcp \
+  --platform managed --region us-central1 --allow-unauthenticated --port 5000 --memory 512Mi
+
+# Agent
+cd agent
+gcloud builds submit --tag gcr.io/gen-lang-client-0492726898/medrecon-agent
+gcloud run deploy medrecon-agent --image gcr.io/gen-lang-client-0492726898/medrecon-agent \
+  --platform managed --region us-central1 --allow-unauthenticated --port 8001 --memory 512Mi \
+  --set-env-vars "GOOGLE_API_KEY=<key>,FHIR_SERVER_URL=https://hapi.fhir.org/baseR4,MCP_SERVER_URL=https://medrecon-mcp-93135657352.us-central1.run.app/mcp"
+```
+
 ## Tech Stack
 
 - **Agent Framework**: Google ADK + A2A Protocol

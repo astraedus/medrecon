@@ -1,0 +1,19 @@
+Every time a patient moves between care settings, their medication list has to be rebuilt from scratch. The hospital has one version. The pharmacy has another. Primary care has a third. Clinicians compare them manually, line by line. It takes 30 to 60 minutes per patient. And when it fails, people die.
+
+MedRecon automates this process using three AI agents coordinating via Google's A2A protocol, backed by eight clinical safety tools.
+
+Here is our dashboard. We select Dorothy Johnson, an 81-year-old with coronary artery disease, CKD stage 3, depression, and chronic pain. Twelve active medications.
+
+The Orchestrator dispatches the Source Collector, which queries three FHIR R4 endpoints simulating a hospital EHR, pharmacy, and primary care office. It merges medication data with source attribution. The Interaction Checker then runs every drug pair through our clinical safety tools.
+
+The Orchestrator assembles a comprehensive reconciliation report from both downstream agents.
+
+Twelve medications across cardiac, psychiatric, pain, and GI categories. Two known allergies. Seven active conditions. Here is what matters. The safety analysis caught two SEVERE interactions. First: Simvastatin with Clarithromycin. Clarithromycin is a strong CYP3A4 inhibitor that can raise simvastatin to levels causing rhabdomyolysis and acute kidney injury. This is a contraindicated combination. Second: Sertraline with Tramadol. Both are serotonergic. Together they risk serotonin syndrome, a potentially fatal condition. For a patient already in CKD stage 3, both interactions carry elevated risk.
+
+Quick Scan mode presents the same data as structured cards. Medications with source attribution on the left. Interaction alerts sorted by severity on the right.
+
+The output is not just a report. MedRecon generates a FHIR R4 Bundle with MedicationStatement and Provenance resources for every reconciled medication. This bundle imports directly into any FHIR-compliant EHR. A data artifact that enters the clinical workflow, not a PDF that gets filed away.
+
+The architecture. Three agents communicate via Google's A2A protocol. The Orchestrator coordinates the Source Collector and Interaction Checker. Both downstream agents call our MCP server, which exposes eight tools for medication retrieval, interaction checking, allergy cross-referencing, dose validation, therapeutic alternatives, and FHIR output generation. Drug interactions come from 48 curated clinical pairs with OpenFDA as a fallback. All data flows as FHIR R4 resources end to end. No proprietary formats.
+
+Manual reconciliation misses interactions like these every day. MedRecon catches them in under a minute. Every SEVERE flag is a potential life saved. The output is FHIR-native. It integrates into existing clinical systems. Open source and deployable today. MedRecon.

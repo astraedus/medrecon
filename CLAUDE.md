@@ -19,6 +19,11 @@ User -> MedRecon Agent (Python/ADK/A2A, port 8001)
 - `mcp-server/` - TypeScript MCP server with clinical tools
   - `tools/GetMedicationsTool.ts` - Queries FHIR for patient medications
   - `tools/CheckInteractionsTool.ts` - Drug interaction checking
+  - `tools/LookupDrugInfoTool.ts` - Drug info lookup via RxNorm
+  - `tools/CheckAllergiesTool.ts` - Patient allergy cross-reference via FHIR
+  - `tools/FindAlternativesTool.ts` - Therapeutic alternatives via RxClass ATC
+  - `tools/ValidateDoseTool.ts` - Dose range validation (18 common drugs)
+  - `tools/ReconcileListsTool.ts` - Medication list reconciliation (core tool)
   - `index.ts` - Express + MCP server entry point
 - `agent/` - Python A2A agent using Google ADK
   - `medrecon_agent/agent.py` - Agent definition with Gemini 2.5 Flash
@@ -57,7 +62,7 @@ including a SEVERE interaction (metoprolol + verapamil).
 
 ## Week 1 Status
 
-- [x] MCP server with get_medications and check_interactions tools
+- [x] MCP server with 7 clinical tools (get_medications, check_interactions, lookup_drug_info, check_allergies, find_alternatives, validate_dose, reconcile_lists)
 - [x] Agent with Gemini 2.5 Flash, calls MCP tools
 - [x] End-to-end working: agent pulls meds from live FHIR, checks interactions
 - [ ] HAPI FHIR Docker (using public server for now)

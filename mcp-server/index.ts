@@ -17,7 +17,15 @@ app.get("/health", async (_req, res) => {
     status: "ok",
     name: "MedRecon MCP Server",
     version: "1.0.0",
-    tools: ["get_medications", "check_interactions"],
+    tools: [
+      "get_medications",
+      "check_interactions",
+      "lookup_drug_info",
+      "check_allergies",
+      "find_alternatives",
+      "validate_dose",
+      "reconcile_lists",
+    ],
   });
 });
 

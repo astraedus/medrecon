@@ -35,7 +35,7 @@ graph TD
     style REPORT fill:#22c55e,color:#000
 ```
 
-**Current (Week 1):** Single agent + MCP server with 2 tools, querying live FHIR data.
+**Current (Week 1):** Single agent + MCP server with 7 clinical tools, querying live FHIR data and RxNorm APIs.
 **Target (Week 3+):** Full 3-agent A2A network with multi-source reconciliation.
 
 ### MCP Server Tools
@@ -44,6 +44,11 @@ graph TD
 |------|-------------|
 | `get_medications` | Retrieves patient medication list from FHIR MedicationRequest/MedicationStatement resources |
 | `check_interactions` | Checks drug-drug interactions using curated clinical database and OpenFDA drug labels |
+| `lookup_drug_info` | Looks up drug information via RxNorm API: RxCUI, ATC drug class, brand/generic names, dosage forms |
+| `check_allergies` | Cross-references patient FHIR allergies against drug names with fuzzy matching and drug class cross-reactivity |
+| `find_alternatives` | Finds therapeutic alternatives using ATC classification from RxNorm/RxClass |
+| `validate_dose` | Validates medication doses against curated safe dose ranges for 18 common drugs |
+| `reconcile_lists` | Reconciles medication lists from multiple sources, flags discrepancies and missing drugs (core tool) |
 
 ### Agent Capabilities
 
@@ -126,6 +131,7 @@ python3 scripts/test-mcp-tools.py
 - **LLM**: Google Gemini 2.5 Flash
 - **FHIR**: HAPI FHIR R4 (public test server)
 - **Drug Interactions**: Curated clinical database + OpenFDA API
+- **Drug Information**: RxNorm API (NLM) + RxClass ATC classification
 - **Languages**: Python 3.12, TypeScript 5.8
 
 ## Project Structure

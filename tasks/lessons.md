@@ -24,6 +24,14 @@
 - This means each request is a standalone session -- no persistent state between requests
 - Tool calls work via `tools/call` method without needing a separate initialize call in the same session
 
+### RxNorm/RxClass APIs require IPv4 in Node.js (2026-03-26)
+- NLM servers (rxnav.nlm.nih.gov) advertise IPv6 AAAA records
+- Node.js tries IPv6 first by default; if IPv6 connectivity is broken, axios calls ETIMEDOUT silently
+- `curl` works fine because it falls back to IPv4 automatically
+- Fix: create `new https.Agent({ family: 4 })` and pass as `httpsAgent` to all axios requests to NLM
+- This applies to all RxNorm, RxClass, and potentially other NLM API calls
+- The `try/catch` in helper functions swallows the error and returns null/empty, making it look like "not found" instead of a network error
+
 ### HAPI FHIR public server for testing
 - Patient 131283452 has 11 active medications including good interaction pairs
 - MedicationRequest resources work well, MedicationStatement may not exist for all patients

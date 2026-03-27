@@ -12,7 +12,7 @@ Twelve medications across cardiac, psychiatric, pain, and GI categories. Two kno
 
 Quick Scan mode presents the same data as structured cards. Medications with source attribution on the left. Interaction alerts sorted by severity on the right.
 
-The output is not just a report. MedRecon generates a FHIR R4 Bundle with MedicationStatement and Provenance resources for every reconciled medication. This bundle imports directly into any FHIR-compliant EHR. A data artifact that enters the clinical workflow, not a PDF that gets filed away.
+The output is not just a report. MedRecon generates a FHIR R4 Bundle with MedicationStatement and Provenance resources for every reconciled medication. This bundle imports directly into any FHIR-compliant EHR. A data artifact that enters the clinical workflow.
 
 The architecture. Three agents communicate via Google's A2A protocol. The Orchestrator coordinates the Source Collector and Interaction Checker. Both downstream agents call our MCP server, which exposes eight tools for medication retrieval, interaction checking, allergy cross-referencing, dose validation, therapeutic alternatives, and FHIR output generation. Drug interactions come from 48 curated clinical pairs with OpenFDA as a fallback. All data flows as FHIR R4 resources end to end. No proprietary formats.
 

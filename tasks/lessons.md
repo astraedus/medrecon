@@ -1,5 +1,20 @@
 # MedRecon - Lessons Learned
 
+## Week 4 (continued)
+
+### Synthea FHIR bundles: slim before posting to HAPI FHIR public server (2026-03-28)
+- Full Synthea bundles are 700KB-26MB (700-9000+ resources with Claims, EOBs, Observations, etc.)
+- HAPI FHIR public server (nginx) rejects bundles >~100KB with HTTP 413
+- Solution: slim to Patient + MedicationRequest only (skip Medication, Condition, etc.)
+- Key errors to handle when slimming:
+  - HAPI-0541: `encounter` ref in MedicationRequest points to excluded resource — strip `encounter`, `requester`, `recorder`, `performer`, `reasonReference`, `eventHistory`, `detectedIssue`, `basedOn`, `priorPrescription` from MedicationRequest
+  - HAPI-2282: `Practitioner?identifier=...` conditional refs not supported — also stripped by removing `requester`
+  - HAPI-2840: Duplicate resource creation on re-run — always use `PUT` not `POST` for resources with UUIDs
+  - `medicationReference` pointing to Medication resources: inline them as `medicationCodeableConcept` from the Medication resource's code field (33% of MedRequests use this pattern)
+- Large slim bundles (>100KB, patients with 100+ meds): split into Patient upload first, then MedicationRequest batches of 30/50
+- After inlining and stripping, typical bundle size is 4-100KB for 1-84 medications
+- Script: `scripts/load-synthea-patients.py`
+
 ## Week 1
 
 ### RxNav Drug Interaction API is deprecated (2026-03-26)

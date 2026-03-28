@@ -115,6 +115,18 @@ including a SEVERE interaction (metoprolol + verapamil).
 All have allergies, conditions, and full FHIR MedicationRequest resources with RxNorm codes.
 Script: `scripts/generate-demo-patients.py` | Data: `scripts/demo-patients.json`
 
+### Synthea Patients (generated 2026-03-28) — 281 patients at scale
+Generated with Synthea (Java 21), uploaded to HAPI FHIR public server.
+Diverse age/gender/condition profiles, realistic medication histories.
+Data: `scripts/synthea-patients.json` | Loader: `scripts/load-synthea-patients.py`
+
+Sample patient IDs (all on hapi.fhir.org/baseR4):
+- `ba4cfafe-ed4a-5146-debc-20df8e995b06` — 335 meds (Alethia Littel, complex polypharmacy)
+- `d1b68169-9f0b-dced-6997-d9f6b574d2ad` — 70 meds (Ester Abrego)
+- `94935dc4-9a87-a096-5343-c6de01573aff` — 39 meds (Barbra Welch)
+- `d678a73d-28c1-643d-740e-5e5825f1a3f9` — 84 meds (Crystle Strosin)
+- `9f40da6c-1867-9f31-12b1-9f3e757e894f` — 170 meds (Sean Treutel)
+
 ## Cloud Run Deployment
 
 - MCP Server: https://medrecon-mcp-93135657352.us-central1.run.app
@@ -152,7 +164,7 @@ Script: `scripts/generate-demo-patients.py` | Data: `scripts/demo-patients.json`
 - [x] FHIR MedicationStatement output (generate_fhir_output tool - 8th tool)
 - [x] FHIR Provenance resources (paired with each MedicationStatement)
 - [x] Frontend FHIR Bundle download button (generate + download in both modes)
-- [ ] Generate Synthea patients (200+) with automated pipeline
+- [x] Generate Synthea patients (281 patients with medications) — see `scripts/synthea-patients.json`
 - [ ] Prompt Opinion marketplace publishing (waiting for support reply)
 
 ## Hackathon

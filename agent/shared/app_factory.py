@@ -26,12 +26,14 @@ Usage:
         agent=root_agent,
         name="medrecon_orchestrator",
         description="...",
-        url="http://localhost:8003",
+        url=os.getenv("BASE_URL", "http://localhost:8003"),
         port=8003,
         fhir_extension_uri="https://.../schemas/a2a/v1/fhir-context",
         require_api_key=True,
     )
 """
+import os
+
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
